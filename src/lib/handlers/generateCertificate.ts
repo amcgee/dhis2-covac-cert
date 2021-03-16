@@ -11,10 +11,14 @@ const asyncDoGenerateCertificate = async (
   id: string,
   tei: TrackedEntityInstance
 ) => {
-  await certify(id, divocPayloadFromTEI(tei));
-  const fileStream = await getCertificateStream(id);
+  try {
+    await certify(id, divocPayloadFromTEI(tei));
+    const fileStream = await getCertificateStream(id);
 
-  await addCertificateEvent(tei, fileStream);
+    await addCertificateEvent(tei, fileStream);
+  } catch (e) {
+    console.error(`Failed to generate certificate for TEI ${id}`, String(e));
+  }
 };
 
 export const generateSync = async (req, res) => {
