@@ -10,7 +10,7 @@ See the [POC Spec Document](https://docs.google.com/document/d/1l6Nq26mLKtlebFpr
 
 Currently, only two API endpoints are supported:
 
-|API Endpoint|Method|Parametes Accepted (POST body)|Description|Synchronous|
+|API Endpoint|Method|Parameters (POST body)|Description|Synchronous|
 |-|-|-|-|-|
 |/certificate/generate|POST|{ id }|Generates a certificate for the given TEI and stores it in DHIS2 as a program stage event||
 |/certificate/generateSync|POST|{ id }|Generates a certificate for the given TEI and stores it in DHIS2 as a program stage event|YES|
