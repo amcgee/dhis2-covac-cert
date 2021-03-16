@@ -43,4 +43,4 @@ A very simple HTML form will be available on port 9090 (or `PORT` if specified i
 - [ ] Implement Tracker Capture widget to trigger certificate generation
 - [ ] Use persistent queue for asynchronous certificate generation backlog with downtime resilience
 - [ ] Support connection to additional certificate generation services
-- [ ] Generalize as a standard "integration service" template that can be used for various integration tasks
+- [ ] (maybe) Generalize as a standard "integration service" template that can be used for various integration tasks
