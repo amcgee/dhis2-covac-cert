@@ -8,7 +8,7 @@ const token =
 
 const Authorization = `Bearer ${token}`;
 
-const client = createClient("dhis2", {
+const client = createClient("divoc", {
   baseURL: baseUrl,
   headers: {
     Authorization,
