@@ -41,4 +41,5 @@ A very simple HTML form will be available on port 9090 (or `PORT` if specified i
 - [ ] Support bulk generation for all uncertified vaccination events on a recurring schedule
 - [ ] Accept HTTP or SMTP triggers from DHIS2 program notification
 - [ ] Implement Tracker Capture widget to trigger certificate generation
+- [ ] Use persistent queue for asynchronous certificate generation backlog with downtime resilience
 - [ ] Support connection to additional certificate generation services
