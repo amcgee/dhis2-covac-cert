@@ -20,9 +20,13 @@ Requires `node` and `yarn` (for development)
 
 ```sh
 yarn install
-yarn start # for development
-yarn build # for production
-node dist/index.js
+
+# for development
+yarn start
+
+# for production
+yarn build
+yarn serve # this will run `nodemon dist/index.js`
 ```
 
 ## UI
