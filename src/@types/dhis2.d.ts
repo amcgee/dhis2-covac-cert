@@ -1,8 +1,8 @@
-type DataValue = {
+export type DataValue = {
   dataElement: string;
   value: string;
 };
-type EventPayload = {
+export type EventPayload = {
   trackedEntityInstance: string;
   program: string;
   programStage: string;
@@ -19,11 +19,11 @@ type EventPayload = {
     | "SKIPPED";
   eventDate: string;
 };
-type EventsPayload = {
+export type EventsPayload = {
   events: EventPayload[];
 };
 
-type Attribute = {
+export type Attribute = {
   attribute: string;
   created: string;
   lastUpdated: string;
@@ -33,10 +33,10 @@ type Attribute = {
   value: string;
 };
 
-type Event = any;
-type Relationship = any;
+export type Event = any;
+export type Relationship = any;
 
-type Enrollment = {
+export type Enrollment = {
   attributes: [];
   created: string;
   createdAtClient: string;
@@ -57,7 +57,7 @@ type Enrollment = {
   trackedEntityInstance: string;
   trackedEntityType: string;
 };
-interface TrackedEntityInstance {
+export interface TrackedEntityInstance {
   trackedEntityInstance: string;
   attributes: Attribute[];
   enrollments: Enrollment[];

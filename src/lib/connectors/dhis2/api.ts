@@ -1,80 +1,42 @@
-import type { RequestInit } from "node-fetch";
-
-import {
-  requestJSON as doRequestJSON,
-  requestRaw as doRequestRaw,
-  RequestOptions,
-} from "../../utils/request";
+import type { AxiosRequestConfig } from "axios";
+import FormData from "form-data";
+import { Stream } from "node:stream";
+import { createClient, joinUrl } from "../../utils/request";
 
 const baseUrl = process.env.DHIS2_BASE_URL || "https://interop.dhis2.org/covac";
 const apiVersion = process.env.DHIS2_API_VERSION || 35;
-const username = process.env.DHIS2_USERNAME;
-const password = process.env.DHIS2_PASSWORD;
+const username = process.env.DHIS2_USERNAME || "";
+const password = process.env.DHIS2_PASSWORD || "";
 
-const authToken = Buffer.from(`${username}:${password}`).toString("base64");
-const authorization = `Basic ${authToken}`;
+const client = createClient("dhis2", {
+  baseURL: baseUrl,
+  auth: {
+    username,
+    password,
+  },
+});
 
-const requestRaw = (
-  apiPath: string,
-  options?: RequestOptions,
-  init?: RequestInit
-) =>
-  doRequestRaw(
-    [baseUrl, "api", String(apiVersion), apiPath],
-    {
-      ...options,
-      authorization,
-    },
-    init
-  );
+export const uploadFile = (fileStream: Stream, config?: AxiosRequestConfig) => {
+  const formData = new FormData();
+  formData.append("file", fileStream, "certificate.pdf");
 
-const request = (
-  apiPath: string,
-  options?: RequestOptions,
-  init?: RequestInit
-) =>
-  doRequestJSON(
-    [baseUrl, "api", String(apiVersion), apiPath],
-    {
-      ...options,
-      authorization,
-    },
-    init
-  );
-
-export const uploadFile = (fileStream) => {
-  //   const formData = new FormData();
-  // formData.append('file', fileStream);
-  return request(
-    "fileResources",
-    {
-      body: fileStream,
-    },
-    {
-      method: "POST",
-    }
-  );
+  return client
+    .post(joinUrl("api", String(apiVersion), "fileResources"), formData, {
+      ...config,
+      headers: { ...config?.headers, ...formData.getHeaders() },
+    })
+    .then((response) => response.data);
 };
-export const get = (
-  apiPath: string,
-  options?: RequestOptions,
-  init?: RequestInit
-) =>
-  request(apiPath, options, {
-    method: "GET",
-    ...init,
-  });
+export const get = (apiPath: string, config?: AxiosRequestConfig) =>
+  client
+    .get(joinUrl("api", String(apiVersion), apiPath), config)
+    .then((response) => response.data);
 
 export const post = (
   apiPath: string,
-  options?: RequestOptions,
-  init?: RequestInit
+  data?: any,
+  config?: AxiosRequestConfig
 ) =>
-  request(apiPath, options, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...init?.headers,
-    },
-    ...init,
-  });
+  client
+    .post(joinUrl("api", String(apiVersion), apiPath), data, config)
+    .then((response) => response.data);

@@ -1,3 +1,5 @@
+import type { TrackedEntityInstance } from "../../@types/dhis2";
+
 const parseFieldsetBy = (set, key) =>
   set.reduce((attrs, attr) => {
     attrs[attr[key]] = attr.value;

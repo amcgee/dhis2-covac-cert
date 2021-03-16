@@ -1,12 +1,16 @@
-import { post, requestRaw } from "../divoc/api";
-import { dummyCertRequest } from "../divoc/dummyCertRequest";
-import { get, uploadFile } from "./api";
+import type {
+  EventsPayload,
+  TrackedEntityInstance,
+} from "../../../@types/dhis2";
+import { get, uploadFile, post } from "./api";
 
 const config = {
   vaccinationProgram: process.env.DHIS2_VACCINATION_PROGRAM || "yDuAzyqYABS",
   certificationProgramStage:
     process.env.DHIS2_VACCINATION_PROGRAM_STAGE || "bA6Syyw5ddu",
   captureOrgUnit: process.env.DHIS2_ROOT_ORG_UNIT || "V5XvX1wr1kF",
+  certificateDataElement:
+    process.env.DHIS2_CERTIFICATE_DATA_ELEMENT || "ycKP8dtKNoF",
 };
 
 export const getTrackedEntityInstance = (id) => {
@@ -21,23 +25,30 @@ export const test = async () => {
   return await get(`programs/${config.vaccinationProgram}`);
 };
 
-const dummyEvent: EventPayload = {
-  trackedEntityInstance: "v8rH0S3UZLE",
-  program: "yDuAzyqYABS",
-  programStage: "bA6Syyw5ddu",
-  enrollment: "Se0W3T5TO8j",
-  orgUnit: "V5XvX1wr1kF",
-  notes: [],
-  dataValues: [],
-  status: "ACTIVE",
-  eventDate: "2021-03-16",
-};
+const printCurrentDate = () => {
+  const date = new Date();
+  let day = String(date.getDate() + 1);
+  if (day.length === 1) {
+    day = "0" + day;
+  }
+  let month = String(date.getMonth() + 1);
+  if (month.length === 1) {
+    month = "0" + month;
+  }
+  const year = date.getFullYear();
 
+  return `${year}-${month}-${day}`;
+};
 export const addCertificateEvent = async (
   tei: TrackedEntityInstance,
   fileStream
 ) => {
-  const fileResource = (await uploadFile(fileStream)).fileResource.id;
+  const response = await uploadFile(fileStream);
+
+  const fileResourceId = response.response?.fileResource?.id;
+  if (response.httpStatus !== "Accepted" || !fileResourceId) {
+    throw new Error("Failed to upload certificate fileResource");
+  }
 
   const eventsPayload: EventsPayload = {
     events: [
@@ -52,17 +63,33 @@ export const addCertificateEvent = async (
         notes: [],
         dataValues: [
           {
-            dataElement: "ycKP8dtKNoF",
-            value: fileResource,
+            dataElement: config.certificateDataElement,
+            value: fileResourceId,
           },
         ],
         status: "COMPLETED",
-        eventDate: "2021-03-15",
+        eventDate: printCurrentDate(),
       },
     ],
   };
 
-  return await post("events", {
-    body: eventsPayload,
-  });
+  try {
+    return await post("events", eventsPayload);
+  } catch (e) {
+    console.error(
+      "Request failed, attempting to print import summary:",
+      JSON.stringify(
+        e.response?.data?.response?.importSummaries?.map((summary) => ({
+          description: summary.description,
+          status: summary.status,
+          importCount: summary.importCount,
+          conflicts: summary.conflicts,
+          reference: summary.reference,
+        })),
+        undefined,
+        2
+      )
+    );
+    throw e;
+  }
 };

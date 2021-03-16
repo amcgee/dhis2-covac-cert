@@ -1,68 +1,41 @@
-import fetch from "node-fetch";
-import type { RequestInit } from "node-fetch";
+import axios, { AxiosRequestConfig } from "axios";
+import * as AxiosLogger from "axios-logger";
 
-export type RequestOptions = {
-  params?: Record<string, string>;
-  body?: any;
-  authorization?: string;
+export const createClient = (name, axiosConfig: AxiosRequestConfig) => {
+  const client = axios.create(axiosConfig);
+  client.interceptors.request.use((request) => {
+    const contentTypeHeaderKey = Object.keys(request.headers).find(
+      (key) => key.toLowerCase() === "content-type"
+    );
+    return AxiosLogger.requestLogger(request, {
+      prefixText: name,
+      headers: true,
+      data:
+        !!contentTypeHeaderKey &&
+        request.headers[contentTypeHeaderKey].toLowerCase() ===
+          "application/json",
+    });
+  });
+  client.interceptors.response.use((response) => {
+    const contentTypeHeaderKey = Object.keys(response.headers).find(
+      (key) => key.toLowerCase() === "content-type"
+    );
+    return AxiosLogger.responseLogger(response, {
+      prefixText: name,
+      headers: true,
+      data:
+        !!contentTypeHeaderKey &&
+        response.headers[contentTypeHeaderKey].toLowerCase() ===
+          "application/json",
+    });
+  });
+  return client;
 };
 
-const joinUrl = (...parts: string[]) => {
+export const joinUrl = (...parts: string[]) => {
   const url = parts.join("/");
   const [scheme, rest] = url.split("://");
-  return scheme + "://" + rest.replace(/\/+/g, "/");
-};
-
-const buildUri = (url, params: Record<string, string> = {}) => {
-  const query = Object.entries(params)
-    .map(([key, value]) => `${key}=${value}`)
-    .join("&");
-  if (!query.length) {
-    return url;
-  }
-  return `${url}?${query}`;
-};
-
-export const requestRaw = async (
-  urlParts: string[],
-  options: RequestOptions = {},
-  init: RequestInit = {}
-) => {
-  const body = !options.body
-    ? undefined
-    : typeof options.body === "string"
-    ? options.body
-    : JSON.stringify(options.body);
-  const uri = buildUri(joinUrl(...urlParts), options.params);
-  console.log(uri);
-  const response = await fetch(uri, {
-    ...init,
-    headers: {
-      ...init.headers,
-      Authorization: options.authorization,
-    },
-    body,
-  });
-
-  if (!response.ok) {
-    console.error("Request failed", init, response);
-    throw new Error("Request failed");
-  }
-
-  return response;
-};
-
-export const requestJSON = async (
-  urlParts: string[],
-  options: RequestOptions = {},
-  init: RequestInit = {}
-) => {
-  const response = await requestRaw(urlParts, options, {
-    ...init,
-    headers: {
-      ...init.headers,
-      Accept: "application/json",
-    },
-  });
-  return await response.json();
+  return rest
+    ? scheme + "://" + rest.replace(/\/+/g, "/")
+    : scheme.replace(/\/+/g, "/");
 };

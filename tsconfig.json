@@ -2,12 +2,6 @@
     "extends": "@tsconfig/node12/tsconfig.json",
     "include": ["src/**/*"],
     "compilerOptions": {
-        "noImplicitAny": false,
-        "paths": {
-            "*": [
-                "*",
-                "src/@types/*"
-            ]
-        }
+        "noImplicitAny": false
     }
 }

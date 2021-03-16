@@ -16,14 +16,7 @@ function App() {
         id: uid,
       }),
     });
-    alert("Submit " + (await result.text()));
-  };
-
-  const onGet = async (e) => {
-    e.preventDefault();
-    const result = await fetch(`/dhis2/tei/${uid}`);
-    console.log(await result.json());
-    alert(result.ok ? "Success" : "Failure");
+    alert(await result.text());
   };
   return html`
     <form onSubmit=${onSubmit}>
@@ -33,7 +26,6 @@ function App() {
         value=${uid}
         onChange=${(e) => setUid(e.target.value)}
       />
-      <button onClick=${onGet}>Get TEI details</button>
       <button type="submit">Generate certificate</button>
     </form>
   `;

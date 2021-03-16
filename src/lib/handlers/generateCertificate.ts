@@ -1,18 +1,23 @@
-import path from "path";
-import { createWriteStream, createReadStream } from "fs";
-import { pipeline } from "stream";
-import { promisify } from "util";
 import { divocPayloadFromTEI } from "../utils/dhis2divocMapping";
-
-const streamPipeline = promisify(pipeline);
 
 import { certify, getCertificateStream } from "../connectors/divoc";
 import {
   addCertificateEvent,
   getTrackedEntityInstance,
 } from "../connectors/dhis2";
+import type { TrackedEntityInstance } from "../../@types/dhis2";
 
-const handler = async (req, res) => {
+const asyncDoGenerateCertificate = async (
+  id: string,
+  tei: TrackedEntityInstance
+) => {
+  await certify(id, divocPayloadFromTEI(tei));
+  const fileStream = await getCertificateStream(id);
+
+  await addCertificateEvent(tei, fileStream);
+};
+
+export const generateSync = async (req, res) => {
   const id = req.body.id;
   if (!id) {
     console.error(`Bad request`, req.body);
@@ -20,25 +25,38 @@ const handler = async (req, res) => {
     return;
   }
   try {
+    // Ensure the TEI exists before returning - this could also be async if desired
     const tei: TrackedEntityInstance = await getTrackedEntityInstance(id);
-    console.log(divocPayloadFromTEI(tei));
+    await asyncDoGenerateCertificate(id, tei);
 
-    await certify(id, divocPayloadFromTEI(tei));
-    const fileStream = await getCertificateStream(id);
-    // await streamPipeline(
-    //   fileStream,
-    //   createWriteStream(path.join(process.cwd(), "./certificate.pdf"))
-    // );
-
-    // const fileStream = createReadStream(path.join(process.cwd(), "./certificate.pdf"));
-
-    await addCertificateEvent(tei, fileStream);
-
-    res.end("Success!!");
+    res
+      .status(201)
+      .send(`Successfully generated vaccination certificate for TEI ${id}`);
   } catch (e) {
-    console.error(e);
-    res.status(500).send("Failed");
+    console.error(String(e));
+    res
+      .status(500)
+      .send(`Failed to generate vaccination certificate for TEI ${id}`);
   }
 };
 
-export default handler;
+export const generate = async (req, res) => {
+  const id = req.body.id;
+  if (!id) {
+    console.error(`Bad request`, req.body);
+    res.status(400).send("Bad request");
+    return;
+  }
+  try {
+    // Ensure the TEI exists before returning - this could also be async if desired
+    const tei: TrackedEntityInstance = await getTrackedEntityInstance(id);
+    asyncDoGenerateCertificate(id, tei); // Don't wait for this to finish - the certificate will be generated asynchronously!
+
+    res
+      .status(201)
+      .send(`Successfully queued certificate generation for TEI ${id}`);
+  } catch (e) {
+    console.error(String(e));
+    res.status(500).send(`Couldn't retrieve TEI ${id}`);
+  }
+};
