@@ -4,6 +4,8 @@
 
 This is a proof-of-concept COVID vacinnation certificate integration module - it listens for HTTP requests, generates a DIVOC vaccination certificate, downloads the certificate PDF and posts it back to the DHIS2 system as a certification program stage event.
 
+See the [POC Spec Document](https://docs.google.com/document/d/1l6Nq26mLKtlebFprmYJThq4R1JYTw6q7PPoFAbODV9E/edit#) for more info (DHIS2 Internal)
+
 ## API
 
 Currently, only two API endpoints are supported:
