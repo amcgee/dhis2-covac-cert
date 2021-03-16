@@ -15,5 +15,6 @@ export const divocPayloadFromTEI = (tei: TrackedEntityInstance) => {
       gender: attrs["Sex"],
       identity: attrs["National ID"],
     },
+    // TODO: Get vaccination details from TEI program enrollment
   };
 };
