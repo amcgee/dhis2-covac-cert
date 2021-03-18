@@ -6,6 +6,8 @@ This is a proof-of-concept COVID vaccination certificate integration module - it
 
 See the [POC Spec Document](https://docs.google.com/document/d/1l6Nq26mLKtlebFprmYJThq4R1JYTw6q7PPoFAbODV9E/edit#) for more info (DHIS2 Internal)
 
+[**demo video**](https://www.dropbox.com/s/r7tclpwds4424ar/Screen%20Recording%202021-03-16%20at%2023.00.45.mov?dl=0) 
+
 ## API
 
 Currently, only two API endpoints are supported:
