@@ -2,17 +2,13 @@ import type { AxiosRequestConfig } from "axios";
 import FormData from "form-data";
 import { Stream } from "node:stream";
 import { createClient, joinUrl } from "../../utils/request";
-
-const baseUrl = process.env.DHIS2_BASE_URL || "https://interop.dhis2.org/covac";
-const apiVersion = process.env.DHIS2_API_VERSION || 35;
-const username = process.env.DHIS2_USERNAME || "";
-const password = process.env.DHIS2_PASSWORD || "";
+import { dhis2config } from "../../utils/envConfig";
 
 const client = createClient("dhis2", {
-  baseURL: baseUrl,
+  baseURL: dhis2config.baseUrl,
   auth: {
-    username,
-    password,
+    username: dhis2config.username,
+    password: dhis2config.password,
   },
 });
 
@@ -21,15 +17,19 @@ export const uploadFile = (fileStream: Stream, config?: AxiosRequestConfig) => {
   formData.append("file", fileStream, "certificate.pdf");
 
   return client
-    .post(joinUrl("api", String(apiVersion), "fileResources"), formData, {
-      ...config,
-      headers: { ...config?.headers, ...formData.getHeaders() },
-    })
+    .post(
+      joinUrl("api", String(dhis2config.apiVersion), "fileResources"),
+      formData,
+      {
+        ...config,
+        headers: { ...config?.headers, ...formData.getHeaders() },
+      }
+    )
     .then((response) => response.data);
 };
 export const get = (apiPath: string, config?: AxiosRequestConfig) =>
   client
-    .get(joinUrl("api", String(apiVersion), apiPath), config)
+    .get(joinUrl("api", String(dhis2config.apiVersion), apiPath), config)
     .then((response) => response.data);
 
 export const post = (
@@ -38,5 +38,5 @@ export const post = (
   config?: AxiosRequestConfig
 ) =>
   client
-    .post(joinUrl("api", String(apiVersion), apiPath), data, config)
+    .post(joinUrl("api", String(dhis2config.apiVersion), apiPath), data, config)
     .then((response) => response.data);

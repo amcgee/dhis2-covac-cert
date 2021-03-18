@@ -3,15 +3,7 @@ import type {
   TrackedEntityInstance,
 } from "../../../@types/dhis2";
 import { get, uploadFile, post } from "./api";
-
-const config = {
-  vaccinationProgram: process.env.DHIS2_VACCINATION_PROGRAM || "yDuAzyqYABS",
-  certificationProgramStage:
-    process.env.DHIS2_VACCINATION_PROGRAM_STAGE || "bA6Syyw5ddu",
-  captureOrgUnit: process.env.DHIS2_ROOT_ORG_UNIT || "V5XvX1wr1kF",
-  certificateDataElement:
-    process.env.DHIS2_CERTIFICATE_DATA_ELEMENT || "ycKP8dtKNoF",
-};
+import { dhis2config as config } from "../../utils/envConfig";
 
 export const getTrackedEntityInstance = (id) => {
   return get(`trackedEntityInstances/${id}`, {
