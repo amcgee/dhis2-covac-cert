@@ -7,7 +7,7 @@ function App() {
   const [uid, setUid] = React.useState(enzoTei);
   const onSubmit = async (e) => {
     e.preventDefault();
-    const result = await fetch("/certificate/generate", {
+    const result = await fetch("/certificate/generateSync", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

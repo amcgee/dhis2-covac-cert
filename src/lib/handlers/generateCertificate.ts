@@ -6,6 +6,7 @@ import {
   getTrackedEntityInstance,
 } from "../connectors/dhis2";
 import type { TrackedEntityInstance } from "../../@types/dhis2";
+import chalk from "chalk";
 
 const asyncDoGenerateCertificate = async (
   id: string,
@@ -17,7 +18,13 @@ const asyncDoGenerateCertificate = async (
 
     await addCertificateEvent(tei, fileStream);
   } catch (e) {
-    console.error(`Failed to generate certificate for TEI ${id}`, String(e));
+    console.error(
+      chalk.red(
+        `[generate] Failed to generate certificate for TEI ${id}`,
+        String(e)
+      )
+    );
+    throw e;
   }
 };
 
@@ -29,7 +36,7 @@ export const generateSync = async (req, res) => {
     return;
   }
   try {
-    // Ensure the TEI exists before returning - this could also be async if desired
+    // Ensure the TEI exists before returning
     const tei: TrackedEntityInstance = await getTrackedEntityInstance(id);
     await asyncDoGenerateCertificate(id, tei);
 
@@ -37,7 +44,6 @@ export const generateSync = async (req, res) => {
       .status(201)
       .send(`Successfully generated vaccination certificate for TEI ${id}`);
   } catch (e) {
-    console.error(String(e));
     res
       .status(500)
       .send(`Failed to generate vaccination certificate for TEI ${id}`);
@@ -54,7 +60,11 @@ export const generate = async (req, res) => {
   try {
     // Ensure the TEI exists before returning - this could also be async if desired
     const tei: TrackedEntityInstance = await getTrackedEntityInstance(id);
-    asyncDoGenerateCertificate(id, tei); // Don't wait for this to finish - the certificate will be generated asynchronously!
+
+    // Don't wait for this to finish - the certificate will be generated asynchronously!
+    asyncDoGenerateCertificate(id, tei).catch((e) => {
+      // Do nothing
+    });
 
     res
       .status(201)

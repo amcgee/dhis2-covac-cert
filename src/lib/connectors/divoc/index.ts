@@ -1,5 +1,4 @@
 import { get, post } from "./api";
-import { dummyCertRequest } from "./dummyCertRequest";
 import { defaultsDeep } from "lodash";
 
 export const certify = async (identifier, data) => {
@@ -9,8 +8,7 @@ export const certify = async (identifier, data) => {
       {
         preEnrollmentCode: identifier,
       },
-      data,
-      dummyCertRequest
+      data
     ),
   ];
   const path = "divoc/api/v1/certify";
