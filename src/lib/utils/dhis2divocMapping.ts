@@ -33,6 +33,9 @@ import type {
   TrackedEntityInstance,
 } from "../../@types/dhis2";
 
+// From WHO COVAC Tracker package
+// Incomplete, some challenges with mapping to DIVOC
+// TODO: load mappings from configuration file
 const vaccinationProgram = "yDuAzyqYABS";
 const vaccinationProgramStage = "a1jCssI2LkW";
 const packageAttributes = {
