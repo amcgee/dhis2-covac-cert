@@ -41,6 +41,8 @@ A very simple HTML form will be available on port 9090 (or `PORT` if specified i
 
 The following environment variables are supported (authentication variables are required)
 
+DHIS2-DIVOC mappings are defined [here](https://github.com/amcgee/dhis2-covac-cert/blob/main/src/lib/utils/dhis2divocMapping.ts)
+
 - `PORT`
 - `DHIS2_BASE_URL`
 - `DHIS2_API_VERSION`
