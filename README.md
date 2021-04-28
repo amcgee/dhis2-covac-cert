@@ -51,16 +51,18 @@ The following environment variables are supported (authentication variables are 
 DHIS2-DIVOC mappings are defined [here](https://github.com/amcgee/dhis2-covac-cert/blob/main/src/lib/utils/dhis2divocMapping.ts)
 
 - `PORT`
-- `DHIS2_BASE_URL`
-- `DHIS2_API_VERSION`
+- `DHIS2_BASE_URL` (default: https://interop.dhis2.org/covac)
+- `DIVOC_BASE_URL` (default: https://divoc.xiv.in)
+- `DIVOC_TOKEN` (required)
 - `DHIS2_USERNAME` (required)
 - `DHIS2_PASSWORD` (required)
+- `DHIS2_API_VERSION`
 - `DHIS2_VACCINATION_PROGRAM`
 - `DHIS2_VACCINATION_PROGRAM_STAGE`
 - `DHIS2_ROOT_ORG_UNIT`
 - `DHIS2_CERTIFICATE_DATA_ELEMENT`
-- `DIVOC_BASE_URL`
-- `DIVOC_TOKEN` (required)
+- `DIVOC_ENROLLMENT_TYPE` (default: **SOMETHING**)
+- `DIVOC_DIVOC_PROGRAM_ID` (default: **ANYTHING**)
 
 ## TODO
 
