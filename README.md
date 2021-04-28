@@ -16,6 +16,13 @@ Currently, only two API endpoints are supported:
 |-|-|-|-|-|
 |/certificate/generate|POST|{ id }|Generates a certificate for the given TEI and stores it in DHIS2 as a program stage event||
 |/certificate/generateSync|POST|{ id }|Generates a certificate for the given TEI and stores it in DHIS2 as a program stage event|YES|
+|/webhooks/program|POST|{ tracked_entity_id, program_id }|(for DHIS2 2.37 program notification webhooks) Generates a certificate for the given TEI and stores it in DHIS2 as a program stage event||
+|/webhooks/programStage|POST|{ tracked_entity_id, program_id, program_stage_id }|(for DHIS2 2.37 program stage notification webhooks) Generates a certificate for the given TEI and stores it in DHIS2 as a program stage event||
+|/certificate/generateBatch|POST|{ start, end }|[COMING SOON] Generates certificates for all uncertified vaccination events between start and end dates (default end is current time)|YES|
+|/schedule|POST|{ delay }|[COMING SOON] Runs bulk generation every <delay> miliseconds.  This is a convenience function, CRON is preferred|YES|
+|/schedule|GET||[COMING SOON] Gets the current schedule status|YES|
+|/schedule|DELETE||[COMING SOON] Stops all scheduled bulk generations|YES|
+
 ---
 
 ## Usage
@@ -44,22 +51,24 @@ The following environment variables are supported (authentication variables are 
 DHIS2-DIVOC mappings are defined [here](https://github.com/amcgee/dhis2-covac-cert/blob/main/src/lib/utils/dhis2divocMapping.ts)
 
 - `PORT`
-- `DHIS2_BASE_URL`
-- `DHIS2_API_VERSION`
+- `DHIS2_BASE_URL` (default: https://interop.dhis2.org/covac)
+- `DIVOC_BASE_URL` (default: https://divoc.xiv.in)
+- `DIVOC_TOKEN` (required)
 - `DHIS2_USERNAME` (required)
 - `DHIS2_PASSWORD` (required)
+- `DHIS2_API_VERSION`
 - `DHIS2_VACCINATION_PROGRAM`
 - `DHIS2_VACCINATION_PROGRAM_STAGE`
 - `DHIS2_ROOT_ORG_UNIT`
 - `DHIS2_CERTIFICATE_DATA_ELEMENT`
-- `DIVOC_BASE_URL`
-- `DIVOC_TOKEN` (required)
+- `DIVOC_ENROLLMENT_TYPE` (default: **SOMETHING**)
+- `DIVOC_DIVOC_PROGRAM_ID` (default: **ANYTHING**)
 
 ## TODO
 
-- [ ] Remove dummy data from certificate request - populate with vaccination data from active program
+- [x] Remove dummy data from certificate request - populate with vaccination data from active program
 - [ ] Support bulk generation for all uncertified vaccination events on a recurring schedule
-- [ ] Accept HTTP or SMTP triggers from DHIS2 program notification
+- [x] Accept HTTP or SMTP triggers from DHIS2 program notification
 - [ ] Implement Tracker Capture widget to trigger certificate generation
 - [ ] Use persistent queue for asynchronous certificate generation backlog with downtime resilience
 - [ ] Support connection to additional certificate generation services
