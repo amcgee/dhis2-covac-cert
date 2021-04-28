@@ -13,6 +13,8 @@ export const dhis2config = {
 };
 
 export const divocConfig = {
-  baseUrl: process.env.DIVOC_BASE_URL || "http://52.172.216.52",
+  baseUrl: process.env.DIVOC_BASE_URL || "https://divoc.xiv.in",
   token: process.env.DIVOC_TOKEN || "",
+  enrollmentType: process.env.DIVOC_ENROLLMENT_TYPE || "SOMETHING",
+  programId: process.env.DIVOC_PROGRAM_ID || "ANYTHING",
 };

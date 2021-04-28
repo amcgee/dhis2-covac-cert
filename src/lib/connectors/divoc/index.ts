@@ -1,5 +1,6 @@
 import { get, post } from "./api";
 import { defaultsDeep } from "lodash";
+import { divocConfig } from "../../utils/envConfig";
 
 export const certify = async (identifier, data) => {
   const body = [
@@ -7,8 +8,8 @@ export const certify = async (identifier, data) => {
       {},
       {
         preEnrollmentCode: identifier,
-        enrollmentType: "string", // TODO: What is this?
-        programId: "string", // TODO: What is this?
+        enrollmentType: divocConfig.enrollmentType, // TODO: What is this?
+        programId: divocConfig.programId, // TODO: What is this?
       },
       data
     ),
