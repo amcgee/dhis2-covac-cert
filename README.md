@@ -16,6 +16,13 @@ Currently, only two API endpoints are supported:
 |-|-|-|-|-|
 |/certificate/generate|POST|{ id }|Generates a certificate for the given TEI and stores it in DHIS2 as a program stage event||
 |/certificate/generateSync|POST|{ id }|Generates a certificate for the given TEI and stores it in DHIS2 as a program stage event|YES|
+|/webhooks/program|POST|{ tracked_entity_id, program_id }|(for DHIS2 2.37 program notification webhooks) Generates a certificate for the given TEI and stores it in DHIS2 as a program stage event||
+|/webhooks/programStage|POST|{ tracked_entity_id, program_id, program_stage_id }|(for DHIS2 2.37 program stage notification webhooks) Generates a certificate for the given TEI and stores it in DHIS2 as a program stage event||
+|/certificate/generateBatch|POST|{ start, end }|[COMING SOON] Generates certificates for all uncertified vaccination events betwee start and end dates (default end it current time)|YES|
+|/schedule|POST|{ delay }|[COMING SOON] Runs bulk generation every <delay> miliseconds.  This is a convenience function, CRON is preferred|YES|
+|/schedule|GET||[COMING SOON] Gets the current schedule status|YES|
+|/schedule|DELETE||[COMING SOON] Stops all scheduled bulk generations|YES|
+
 ---
 
 ## Usage
@@ -57,9 +64,9 @@ DHIS2-DIVOC mappings are defined [here](https://github.com/amcgee/dhis2-covac-ce
 
 ## TODO
 
-- [ ] Remove dummy data from certificate request - populate with vaccination data from active program
+- [x] Remove dummy data from certificate request - populate with vaccination data from active program
 - [ ] Support bulk generation for all uncertified vaccination events on a recurring schedule
-- [ ] Accept HTTP or SMTP triggers from DHIS2 program notification
+- [x] Accept HTTP or SMTP triggers from DHIS2 program notification
 - [ ] Implement Tracker Capture widget to trigger certificate generation
 - [ ] Use persistent queue for asynchronous certificate generation backlog with downtime resilience
 - [ ] Support connection to additional certificate generation services
