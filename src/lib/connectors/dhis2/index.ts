@@ -6,11 +6,9 @@ import { get, uploadFile, post } from "./api";
 import { dhis2config as config } from "../../utils/envConfig";
 
 export const getTrackedEntityInstance = (id) => {
-  return get(`trackedEntityInstances/${id}`, {
-    params: {
-      program: config.vaccinationProgram,
-    },
-  });
+  return get(
+    `trackedEntityInstances/${id}?fields=*&program=${config.vaccinationProgram}`
+  );
 };
 export const getVaccinationEvents = () => {};
 export const test = async () => {

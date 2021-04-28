@@ -32,16 +32,19 @@ import type {
   Event,
   TrackedEntityInstance,
 } from "../../@types/dhis2";
+import { parseDateString, stringifyDate } from "./dates";
 
-const vaccinationProgram = "yDuAzyqYABS";
-const vaccinationProgramStage = "a1jCssI2LkW";
+const nationality = "Norway";
+
+export const vaccinationProgram = "yDuAzyqYABS";
+export const vaccinationProgramStage = "a1jCssI2LkW";
 const packageAttributes = {
   firstName: "s2slttllN6D",
   lastName: "CbvQnJ9vOOd",
-  dob: "zTWSj3Lg5KP",
-  nationalId: "aec8etc85Rz",
-  sex: "kbwzu78u3JT",
-  address: undefined, // TODO: Convert from long text...?
+  dob: "mAWcalQYYyk", // TODO: "zTWSj3Lg5KP",
+  nationalId: "Ewi7FUfcHAD", //TODO: "aec8etc85Rz",
+  sex: "CklPZdOd6H1", // TODO: "kbwzu78u3JT",
+  address: "VCtm2pySeEV", // TODO: Convert from long text...?
   phone: "ciCR6BBvIT4",
 };
 
@@ -69,6 +72,12 @@ const packageDataElements = {
   underlyingConditionOther: "dpyQUtizp7s",
   vaccineManufacturer: "rpkH9ZPGJcX",
   vaccineName: "bbnyNYD1wgS",
+};
+
+const doseEnum = {
+  DOSE1: 1,
+  DOSE2: 2,
+  BOOSTER: 999,
 };
 
 const parseFieldsetBy = <T>(set: T[], key, valueKey = "value") =>
@@ -111,25 +120,34 @@ const mapRecipient = (tei: TrackedEntityInstance) => {
     dob: attrs[packageAttributes.dob],
     gender: attrs[packageAttributes.sex],
     identity: attrs[packageAttributes.nationalId],
+    nationality, // TODO: Make optional
     contact: attrs[packageAttributes.phone]
       ? [`tel:${attrs[packageAttributes.phone]}`]
       : [],
-    address: undefined, // TODO: make address object?
+    address: {
+      addressLine1: "123, Koramangala",
+      addressLine2: "3rd cross",
+      district: "Bengaluru South",
+      state: "Karnataka",
+      pincode: "560034",
+    }, // TODO: Make optional OR parse address string
   };
 };
 
 const mapVaccinationEvent = (event: Event) => {
   const dataValues = parseFieldsetBy(event.dataValues, "dataElement");
 
+  console.log(event.eventDate, parseDateString(event.eventDate));
+
   return {
     name: dataValues[packageDataElements.vaccineName],
     manufacturer: dataValues[packageDataElements.vaccineManufacturer],
     batch: dataValues[packageDataElements.batchNumber],
-    date: event.eventDate, // TODO: Parse and format
-    dose: dataValues[packageDataElements.doseNumber],
-    totalDoses: dataValues[packageDataElements.totalDoses],
-    effectiveStart: "UNKNOWN", // TODO
-    effectiveUntil: "UNKNOWN", // TODO
+    date: stringifyDate(parseDateString(event.eventDate)),
+    dose: doseEnum[dataValues[packageDataElements.doseNumber]], // TODO: Handle booster doses
+    totalDoses: parseInt(dataValues[packageDataElements.totalDoses]),
+    effectiveStart: stringifyDate(parseDateString(event.eventDate), false), // TODO: make optional?
+    effectiveUntil: stringifyDate(parseDateString(event.eventDate), false), // TODO: make optional
   };
 };
 
@@ -143,7 +161,13 @@ const mapVaccinator = (event: Event) => {
 const mapFacility = (event: Event) => {
   return {
     name: event.orgUnitName,
-    address: undefined, // TODO
+    address: {
+      addressLine1: "123, Koramangala",
+      addressLine2: "3rd cross",
+      district: "Bengaluru South",
+      state: "Karnataka",
+      pincode: "560034",
+    }, // TODO: Make optional
   };
 };
 
@@ -152,7 +176,8 @@ export const divocPayloadFromTEI = (tei: TrackedEntityInstance) => {
     tei.enrollments
   );
   if (!vaccinationEvent) {
-    return null;
+    console.log("TEI", tei);
+    throw new Error("Failed to load vaccination event");
   }
   const payload = {
     recipient: mapRecipient(tei),
@@ -161,6 +186,6 @@ export const divocPayloadFromTEI = (tei: TrackedEntityInstance) => {
     facility: mapFacility(vaccinationEvent),
   };
 
-  console.log(payload);
+  console.log(`Generating DIVOC certificate`, payload);
   return payload;
 };

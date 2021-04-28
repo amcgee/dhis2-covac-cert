@@ -18,4 +18,11 @@ export const post = (
   apiPath: string,
   data?: any,
   config?: AxiosRequestConfig
-) => client.post(apiPath, data, config).then((response) => response.data);
+) =>
+  client
+    .post(apiPath, data, config)
+    .then((response) => response.data)
+    .catch((err) => {
+      console.log(err.response.data);
+      throw err;
+    });

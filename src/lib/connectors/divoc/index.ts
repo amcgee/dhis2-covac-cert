@@ -7,6 +7,8 @@ export const certify = async (identifier, data) => {
       {},
       {
         preEnrollmentCode: identifier,
+        enrollmentType: "string", // TODO: What is this?
+        programId: "string", // TODO: What is this?
       },
       data
     ),

@@ -8,7 +8,7 @@ import {
 import type { TrackedEntityInstance } from "../../@types/dhis2";
 import chalk from "chalk";
 
-const asyncDoGenerateCertificate = async (
+export const asyncDoGenerateCertificate = async (
   id: string,
   tei: TrackedEntityInstance
 ) => {
