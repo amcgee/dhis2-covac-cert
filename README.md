@@ -18,7 +18,7 @@ Currently, only two API endpoints are supported:
 |/certificate/generateSync|POST|{ id }|Generates a certificate for the given TEI and stores it in DHIS2 as a program stage event|YES|
 |/webhooks/program|POST|{ tracked_entity_id, program_id }|(for DHIS2 2.37 program notification webhooks) Generates a certificate for the given TEI and stores it in DHIS2 as a program stage event||
 |/webhooks/programStage|POST|{ tracked_entity_id, program_id, program_stage_id }|(for DHIS2 2.37 program stage notification webhooks) Generates a certificate for the given TEI and stores it in DHIS2 as a program stage event||
-|/certificate/generateBatch|POST|{ start, end }|[COMING SOON] Generates certificates for all uncertified vaccination events betwee start and end dates (default end it current time)|YES|
+|/certificate/generateBatch|POST|{ start, end }|[COMING SOON] Generates certificates for all uncertified vaccination events between start and end dates (default end is current time)|YES|
 |/schedule|POST|{ delay }|[COMING SOON] Runs bulk generation every <delay> miliseconds.  This is a convenience function, CRON is preferred|YES|
 |/schedule|GET||[COMING SOON] Gets the current schedule status|YES|
 |/schedule|DELETE||[COMING SOON] Stops all scheduled bulk generations|YES|
