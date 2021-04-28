@@ -34,6 +34,9 @@ import type {
 } from "../../@types/dhis2";
 import { parseDateString, stringifyDate } from "./dates";
 
+// From WHO COVAC Tracker package
+// Incomplete, some challenges with mapping to DIVOC
+// TODO: load mappings from configuration file
 const nationality = "Norway";
 
 export const vaccinationProgram = "yDuAzyqYABS";
@@ -41,9 +44,9 @@ export const vaccinationProgramStage = "a1jCssI2LkW";
 const packageAttributes = {
   firstName: "s2slttllN6D",
   lastName: "CbvQnJ9vOOd",
-  dob: "mAWcalQYYyk", // TODO: "zTWSj3Lg5KP",
-  nationalId: "Ewi7FUfcHAD", //TODO: "aec8etc85Rz",
-  sex: "CklPZdOd6H1", // TODO: "kbwzu78u3JT",
+  dob: "mAWcalQYYyk", // TODO (changed): "zTWSj3Lg5KP",
+  nationalId: "Ewi7FUfcHAD", //TODO (changed): "aec8etc85Rz",
+  sex: "CklPZdOd6H1", // TODO (changed): "kbwzu78u3JT",
   address: "VCtm2pySeEV", // TODO: Convert from long text...?
   phone: "ciCR6BBvIT4",
 };
